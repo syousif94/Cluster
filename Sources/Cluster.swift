@@ -385,7 +385,7 @@ open class ClusterManager {
     func asyncInsert(_ annotations: [MKAnnotation], mapView: MKMapView) {
         for (index, annotation) in annotations.enumerated() {
             serialQueue.sync {
-                let elaspse = 0.2 * Double(index)
+                let elaspse = 0.02 * Double(index)
                 DispatchQueue.main.asyncAfter(deadline: .now() + elaspse) {
                     mapView.addAnnotation(annotation)
                 }
