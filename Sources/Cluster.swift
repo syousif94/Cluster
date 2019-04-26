@@ -377,7 +377,20 @@ open class ClusterManager {
     open func display(mapView: MKMapView, toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
-        mapView.addAnnotations(toAdd)
+        asyncInsert(toAdd, mapView: mapView)
+    }
+    
+    let serialQueue = DispatchQueue(label: "serialannotations")
+    
+    func asyncInsert(_ annotations: [MKAnnotation], mapView: MKMapView) {
+        for (index, annotation) in annotations.enumerated() {
+            serialQueue.sync {
+                let elaspse = 0.2 * Double(index)
+                DispatchQueue.main.asyncAfter(deadline: .now() + elaspse) {
+                    mapView.addAnnotation(annotation)
+                }
+            }
+        }
     }
     
     func cellSize(for zoomLevel: Double) -> Double {
